@@ -42,7 +42,6 @@ class Sensor():
                     transformed_data = [
                         {'variable': key, 'value': data[key]} for key in data
                     ]
-                    print(json.dumps(transformed_data))
 
                     # send data over mqtt
                     client.publish('person-activity',

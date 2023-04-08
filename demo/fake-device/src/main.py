@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 sensor = Sensor(
-    'data.csv',
+    'fall.csv',
     5,
     'mqtt.tago.io',
     1883,
