@@ -28,7 +28,12 @@ def analysis(context, scope: list) -> None:
 
     y = classifier.predict(X)
     if y[0] == 1.:
-        print("Idoso Caiu!!")
+        print("Fall detected! Sending message to contact")
+
+    device.sendData({
+        'variable': 'anomaly',
+        'value': y[0]
+    })
 
 
 Analysis({"token": os.environ['ANALYSIS_TOKEN']}).init(analysis)
