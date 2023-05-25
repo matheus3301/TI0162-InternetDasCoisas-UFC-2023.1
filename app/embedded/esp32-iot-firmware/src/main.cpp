@@ -5,29 +5,27 @@
 
 #define DEVICE_ID "ps-01"     // different for each device
 #define MESSAGE_INTERVAL 1000 // miliseconds
+
 #define LDR_PIN 36
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-  uint8_t temprature_sens_read();
-#ifdef __cplusplus
-}
-#endif
-uint8_t temprature_sens_read();
+#define TRIGGER_PIN 17
+#define ECHO_PIN 16
+
+#define RED_PIN 13
+#define GREEN_PIN 12
+#define BLUE_PIN 14
 
 const unsigned long baud = 9600;
 
-const char *wifi_ssid = "brisa-2527995";
-const char *wifi_password = "gv0nqszz";
+const char *wifi_ssid = "javazap";
+const char *wifi_password = "senhasenha";
 
-const char *mqtt_host = "192.168.0.11";
+const char *mqtt_host = "192.168.88.63";
 const int mqtt_port = 1883;
 
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
-Ultrasonic ultrasonic(17, 16);
+Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
 
 long lastMessageMilis = 0;
 
@@ -35,6 +33,7 @@ void setup_wifi();
 void setup_mqtt();
 void connect_mqtt();
 void handle_mqtt_message(char *topic, byte *message, unsigned int message_size);
+void set_actuator_color(uint8_t r, uint8_t g, uint8_t b);
 
 double get_internal_temperature();
 int get_ldr();
@@ -44,7 +43,16 @@ void setup()
   Serial.begin(baud);
   Serial.println("[-] bootstrapping the device");
 
+  pinMode(RED_PIN, OUTPUT);
+  pinMode(GREEN_PIN, OUTPUT);
+  pinMode(BLUE_PIN, OUTPUT);
+
+  set_actuator_color(0, 255, 255);
+  delay(2000);
+
+  set_actuator_color(255, 255, 0);
   setup_wifi();
+
   setup_mqtt();
 }
 
@@ -52,7 +60,11 @@ void loop()
 {
   if (!mqttClient.connected())
   {
+    set_actuator_color(255, 0, 255);
+
     connect_mqtt();
+
+    set_actuator_color(255, 255, 255);
   }
 
   mqttClient.loop();
@@ -80,7 +92,7 @@ void loop()
     topic = DEVICE_ID;
     topic += "/sensors/distance";
     mqttClient.publish(topic.c_str(), String(ultrasonic.read()).c_str());
-    Serial.println(String(ultrasonic.read()).c_str());
+    // Serial.println(String(ultrasonic.read()).c_str());
   }
 }
 
@@ -149,10 +161,17 @@ void connect_mqtt()
 
 double get_internal_temperature()
 {
-  return (temprature_sens_read() - 32) / 1.8;
+  return 0;
 }
 
 int get_ldr()
 {
   return analogRead(LDR_PIN);
+}
+
+void set_actuator_color(uint8_t r, uint8_t g, uint8_t b)
+{
+  digitalWrite(RED_PIN, r);
+  digitalWrite(GREEN_PIN, g);
+  digitalWrite(BLUE_PIN, b);
 }
