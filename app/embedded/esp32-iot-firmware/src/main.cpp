@@ -131,7 +131,30 @@ void handle_mqtt_message(char *topic, byte *message, unsigned int message_size)
   Serial.printf("[-] new message on topic %s\n", topic);
   Serial.printf("[-] message: %s\n", msgBuffer);
 
+  int command = msgBuffer.toInt();
+
   // TODO: handle all types of incoming messages
+  switch (command)
+  {
+  case 0:
+    set_actuator_color(0, 255, 0);
+    break;
+
+  case 1:
+    set_actuator_color(0, 0, 255);
+    break;
+
+  case 2:
+    set_actuator_color(255, 0, 0);
+    break;
+
+  case 3:
+    set_actuator_color(255, 255, 255);
+    break;
+
+  default:
+    break;
+  }
 }
 
 void connect_mqtt()
@@ -148,7 +171,8 @@ void connect_mqtt()
       commandsTopic += DEVICE_ID;
       commandsTopic += "/commands";
 
-      mqttClient.subscribe(commandsTopic.c_str());
+      // mqttClient.subscribe(commandsTopic.c_str());
+      mqttClient.subscribe("ps-01/commands");
     }
     else
     {
