@@ -11,16 +11,18 @@
 #define TRIGGER_PIN 17
 #define ECHO_PIN 16
 
-#define RED_PIN 13
-#define GREEN_PIN 12
-#define BLUE_PIN 14
+#define RED_PIN 21
+#define GREEN_PIN 13
+#define BLUE_PIN 12
+
+#define PRESENCE_MAX 4
 
 const unsigned long baud = 9600;
 
-const char *wifi_ssid = "javazap";
-const char *wifi_password = "senhasenha";
+const char *wifi_ssid = "brisa-2527995";
+const char *wifi_password = "gv0nqszz";
 
-const char *mqtt_host = "192.168.88.63";
+const char *mqtt_host = "192.168.0.5";
 const int mqtt_port = 1883;
 
 WiFiClient wifiClient;
@@ -29,14 +31,23 @@ Ultrasonic ultrasonic(TRIGGER_PIN, ECHO_PIN);
 
 long lastMessageMilis = 0;
 
+short presenceCount = 0;
+boolean isOccupied = false;
+
 void setup_wifi();
 void setup_mqtt();
 void connect_mqtt();
 void handle_mqtt_message(char *topic, byte *message, unsigned int message_size);
+
 void set_actuator_color(uint8_t r, uint8_t g, uint8_t b);
 
 double get_internal_temperature();
 int get_ldr();
+
+void send_ldr_data();
+void send_temperature_data();
+void handle_presence();
+void send_presence_data();
 
 void setup()
 {
@@ -53,7 +64,13 @@ void setup()
   set_actuator_color(255, 255, 0);
   setup_wifi();
 
+  set_actuator_color(255, 0, 255);
   setup_mqtt();
+  set_actuator_color(255, 255, 255);
+
+  connect_mqtt();
+
+  send_presence_data();
 }
 
 void loop()
@@ -76,23 +93,9 @@ void loop()
 
     Serial.println("[-] sending data to cloud now");
 
-    String topic;
-    topic += DEVICE_ID;
-    topic += "/sensors/temperature";
-
-    mqttClient.publish(topic.c_str(), String(get_internal_temperature(), 2).c_str());
-    // Serial.println(String(get_internal_temperature(), 2).c_str());
-
-    topic = DEVICE_ID;
-    topic += "/sensors/ldr";
-
-    mqttClient.publish(topic.c_str(), String(get_ldr()).c_str());
-    // Serial.println(String(get_ldr()).c_str());
-
-    topic = DEVICE_ID;
-    topic += "/sensors/distance";
-    mqttClient.publish(topic.c_str(), String(ultrasonic.read()).c_str());
-    // Serial.println(String(ultrasonic.read()).c_str());
+    send_temperature_data();
+    send_ldr_data();
+    handle_presence();
   }
 }
 
@@ -167,12 +170,7 @@ void connect_mqtt()
     {
       Serial.printf("[-] connected to broker with id %s\n", DEVICE_ID);
 
-      String commandsTopic;
-      commandsTopic += DEVICE_ID;
-      commandsTopic += "/commands";
-
-      // mqttClient.subscribe(commandsTopic.c_str());
-      mqttClient.subscribe("ps-01/commands");
+      mqttClient.subscribe("commands/" DEVICE_ID);
     }
     else
     {
@@ -198,4 +196,71 @@ void set_actuator_color(uint8_t r, uint8_t g, uint8_t b)
   digitalWrite(RED_PIN, r);
   digitalWrite(GREEN_PIN, g);
   digitalWrite(BLUE_PIN, b);
+}
+
+void send_ldr_data()
+{
+  String topic = "sensors/";
+  topic += DEVICE_ID;
+  topic += "/ldr";
+
+  mqttClient.publish(topic.c_str(), String(get_ldr()).c_str());
+}
+
+void send_temperature_data()
+{
+  String topic;
+  topic += "sensors/";
+  topic += DEVICE_ID;
+  topic += "/temperature";
+
+  mqttClient.publish(topic.c_str(), String(get_internal_temperature(), 2).c_str());
+}
+
+void handle_presence()
+{
+  unsigned int readData = ultrasonic.read();
+
+  if (!isOccupied)
+  {
+    if (40 >= readData && 2 <= readData)
+    {
+      presenceCount++;
+
+      if (presenceCount >= PRESENCE_MAX)
+      {
+        isOccupied = true;
+        send_presence_data();
+      }
+    }
+    else
+    {
+      presenceCount = 0;
+    }
+  }
+  else
+  {
+    if (40 >= readData && 2 <= readData)
+    {
+      presenceCount = 0;
+    }
+    else
+    {
+      presenceCount++;
+
+      if (presenceCount >= PRESENCE_MAX)
+      {
+        isOccupied = false;
+        send_presence_data();
+      }
+    }
+  }
+}
+
+void send_presence_data()
+{
+  String topic = "sensors/";
+  topic += DEVICE_ID;
+  topic += "/presence";
+  mqttClient.publish(topic.c_str(), String((isOccupied ? '1' : '0')).c_str());
 }

@@ -3,6 +3,7 @@ version: '3.8'
 services:
   mosquitto:
     image: eclipse-mosquitto
+    hostname: 'mosquitto'
     volumes:
       - ./mosquitto:/mosquitto/config
     ports:
@@ -10,7 +11,16 @@ services:
       - 9001:9001
     networks:
       - default
-    
+
+  worker:
+    build: ./worker
+    depends_on:
+      - mosquitto
+    environment:
+      WAIT_HOSTS: mosquitto:1883
+    networks:
+      - default
+
 networks:
   default:
     driver: bridge
