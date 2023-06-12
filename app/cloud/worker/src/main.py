@@ -35,6 +35,7 @@ client.subscribe(DEVICE_RESERVE_TOPIC)
 client.loop_start()
 while True:
     try:
+        # TODO: SEND NEW DATA ON A TOPIC ON EACH SECOND
         pass
     except Exception:
         pass

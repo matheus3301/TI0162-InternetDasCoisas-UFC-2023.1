@@ -1,3 +1,3 @@
 import json
 
-devices = json.loads(open('devices.json'))
+devices = json.loads(open('database/devices.json').read())

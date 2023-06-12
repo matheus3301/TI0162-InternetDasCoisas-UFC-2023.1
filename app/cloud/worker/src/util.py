@@ -1,2 +1,2 @@
-def get_device_id(topic: str) -> str:
-    return topic.split("/")[1]
+def get_device_id(message) -> str:
+    return message.topic.split("/")[1]
