@@ -1,5 +1,9 @@
 import paho.mqtt.client as mqtt
 import handle
+import time
+import commands
+
+NOTIFICATION_TIME = 2
 
 BROKER_HOST = "mosquitto"
 BROKER_PORT = 1883
@@ -35,8 +39,9 @@ client.subscribe(DEVICE_RESERVE_TOPIC)
 client.loop_start()
 while True:
     try:
-        # TODO: SEND NEW DATA ON A TOPIC ON EACH SECOND
-        pass
+        while True:
+            commands.send_notifications(client)
+            time.sleep(NOTIFICATION_TIME)
     except Exception:
         pass
 client.loop_stop()

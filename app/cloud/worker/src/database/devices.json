@@ -1,7 +1,9 @@
 {
   "ps-01": {
-    "latitude": -3.7451003050295797,
-    "longitude": -38.57661974686584,
+    "location": {
+      "latitude": -3.7451003050295797,
+      "longitude": -38.57661974686584
+    },
     "requestedBy": null,
     "isOcuppied": false,
     "luminosity": 0,
