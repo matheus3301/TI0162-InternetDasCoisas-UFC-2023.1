@@ -36,9 +36,8 @@ client.subscribe(DEVICE_RESERVE_TOPIC)
 client.loop_start()
 while True:
     try:
-        while True:
-            commands.send_notifications(client)
-            time.sleep(NOTIFICATION_TIME)
+        commands.send_notifications(client)
+        time.sleep(NOTIFICATION_TIME)
     except Exception:
         pass
 client.loop_stop()
