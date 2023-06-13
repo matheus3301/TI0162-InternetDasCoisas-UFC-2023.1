@@ -46,52 +46,21 @@ def on_new_presence(client, userdata, message):
         f"[-] setting {device_id} as {'not ' if not isOcuppied else ''}occupied"
     )
 
-    if isOcuppied:
-
-        if data.devices[device_id]['requestedBy'] is None:
-            print(f"[-] {device_id} ocuppied incorrectly")
-
-            commands.send_command(client, device_id, '2')
-
-        else:
-            # TODO: check if the person who occupied is correct
-            print(f"[-] {device_id} ocuppied correcty")
-
-            commands.send_command(client, device_id, '3')
-
-    else:
-        if data.devices[device_id]['requestedBy'] is None:
-            print(f"[-] {device_id} is free")
-
-            commands.send_command(client, device_id, '0')
-
-        else:
-            print(f"[-] {device_id} is reserved")
-
-            commands.send_command(client, device_id, '1')
-
-
-def on_device_list(client, userdata, message):
-    print(f"[-] new request for device list")
-
-    response_topic = message.properties.ResponseTopic
-
-    properties = Properties(PacketTypes.PUBLISH)
-    properties.CorrelationData = message.properties.CorrelationData
-
-    print(f"[-] responding on topic {response_topic}")
-
-    client.publish(response_topic, json.dumps(data.devices))
+    commands.update_device_status(client, device_id)
 
 
 def on_device_reserve(client, userdata, message):
-    # TODO: Finish this
-    # device_id = util.get_device_id(message)
-    # raw_data = message.payload.decode()
+    device_id = util.get_device_id(message)
+    raw_data = message.payload.decode()
+    response_topic = message.properties.ResponseTopic
+    properties = Properties(PacketTypes.PUBLISH)
+    properties.CorrelationData = message.properties.CorrelationData
 
-    # response_topic = message.properties.ResponseTopic
+    if data.devices[device_id]['requestedBy'] is None:
+        data.devices[device_id]['requestedBy'] = raw_data
+    elif data.devices[device_id]['requestedBy'] == raw_data:
+        data.devices[device_id]['requestedBy'] = None
 
-    # properties = Properties(PacketTypes.PUBLISH)
-    # properties.CorrelationData = message.properties.CorrelationData
+    commands.update_device_status(client, device_id)
 
-    pass
+    client.publish(response_topic, data.devices[device_id]['requestedBy'])
