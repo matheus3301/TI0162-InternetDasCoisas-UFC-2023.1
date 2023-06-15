@@ -52,9 +52,9 @@ def on_new_presence(client, userdata, message):
 def on_device_reserve(client, userdata, message):
     device_id = util.get_device_id(message)
     raw_data = message.payload.decode()
-    response_topic = message.properties.ResponseTopic
-    properties = Properties(PacketTypes.PUBLISH)
-    properties.CorrelationData = message.properties.CorrelationData
+    # response_topic = message.properties.ResponseTopic
+    # properties = Properties(PacketTypes.PUBLISH)
+    # properties.CorrelationData = message.properties.CorrelationData
 
     if data.devices[device_id]['requestedBy'] is None:
         data.devices[device_id]['requestedBy'] = raw_data
@@ -63,4 +63,4 @@ def on_device_reserve(client, userdata, message):
 
     commands.update_device_status(client, device_id)
 
-    client.publish(response_topic, data.devices[device_id]['requestedBy'])
+    # client.publish(response_topic, data.devices[device_id]['requestedBy'])
