@@ -8,7 +8,8 @@ from paho.mqtt.packettypes import PacketTypes
 
 
 def on_publish(client, userdata, result):
-    print("[-] message sent")
+    # print("[-] message sent")
+    pass
 
 
 def on_message(client, userdata, message):
@@ -22,7 +23,7 @@ def on_new_temperature(client, userdata, message):
 
     data.devices[device_id]['temperature'] = raw_data
 
-    print(f"[-] new temperature data of {raw_data}º for {device_id}")
+    # print(f"[-] new temperature data of {raw_data}º for {device_id}")
 
 
 def on_new_ldr(client, userdata, message):
@@ -31,7 +32,7 @@ def on_new_ldr(client, userdata, message):
 
     data.devices[device_id]['luminosity'] = raw_data
 
-    print(f"[-] new luminosity data of {raw_data} for {device_id}")
+    # print(f"[-] new luminosity data of {raw_data} for {device_id}")
 
 
 def on_new_presence(client, userdata, message):
@@ -50,8 +51,12 @@ def on_new_presence(client, userdata, message):
 
 
 def on_device_reserve(client, userdata, message):
+
     device_id = util.get_device_id(message)
     raw_data = message.payload.decode()
+
+
+    print(f"[-] user {raw_data} trying to reserve device {device_id}")
     # response_topic = message.properties.ResponseTopic
     # properties = Properties(PacketTypes.PUBLISH)
     # properties.CorrelationData = message.properties.CorrelationData
