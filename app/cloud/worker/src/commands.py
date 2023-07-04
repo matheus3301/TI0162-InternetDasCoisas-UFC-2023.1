@@ -20,6 +20,7 @@ def send_notifications(client):
             'location': data.devices[device_id]['location'],
             'requestedBy': data.devices[device_id]['requestedBy'],
             'isOcuppied': data.devices[device_id]['isOcuppied'],
+            'ocuppiedProperly': data.devices[device_id]['ocuppiedProperly'],
             'luminosity': data.devices[device_id]['luminosity'],
             'temperature': data.devices[device_id]['temperature'],
         })
@@ -30,7 +31,7 @@ def send_notifications(client):
 def update_device_status(client, device_id):
     if data.devices[device_id]['isOcuppied']:
 
-        if data.devices[device_id]['requestedBy'] is None or not data.devices[device_id]['ocupiedProperly']:
+        if data.devices[device_id]['requestedBy'] is None or not data.devices[device_id]['ocuppiedProperly']:
             print(f"[-] {device_id} ocuppied incorrectly")
 
             send_command(client, device_id, '2')

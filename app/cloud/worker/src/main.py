@@ -13,6 +13,7 @@ TEMPERATURE_TOPIC = "sensors/+/temperature"
 PRESENCE_TOPIC = "sensors/+/presence"
 
 DEVICE_RESERVE_TOPIC = "devices/+/reserve"
+DEVICE_CONFIRM_TOPIC = "devices/+/confirm"
 
 client = mqtt.Client("worker")
 client.connect(BROKER_HOST, BROKER_PORT)
@@ -25,12 +26,15 @@ client.message_callback_add(PRESENCE_TOPIC, handle.on_new_presence)
 client.message_callback_add(TEMPERATURE_TOPIC, handle.on_new_temperature)
 
 client.message_callback_add(DEVICE_RESERVE_TOPIC, handle.on_device_reserve)
+client.message_callback_add(DEVICE_CONFIRM_TOPIC, handle.on_occupation_confirm)
 
 
 client.subscribe(LDR_TOPIC)
 client.subscribe(TEMPERATURE_TOPIC)
 client.subscribe(PRESENCE_TOPIC)
 client.subscribe(DEVICE_RESERVE_TOPIC)
+client.subscribe(DEVICE_CONFIRM_TOPIC)
+
 
 
 client.loop_start()

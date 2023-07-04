@@ -46,7 +46,7 @@ def on_new_presence(client, userdata, message):
     if isOcuppied:
         commands.ask_occupation(client, device_id)
     else:
-        data.devices[device_id]["ocupiedProperly"] = True
+        data.devices[device_id]["ocuppiedProperly"] = True
 
     print(
         f"[-] setting {device_id} as {'not ' if not isOcuppied else ''}occupied"
@@ -76,6 +76,6 @@ def on_occupation_confirm(client, userdata, message):
     raw_data = message.payload.decode()
 
     if raw_data != '1':
-        data.devices[device_id]['ocupiedProperly'] = False
+        data.devices[device_id]['ocuppiedProperly'] = False
 
     commands.update_device_status(client, device_id)
