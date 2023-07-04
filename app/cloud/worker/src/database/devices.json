@@ -6,6 +6,7 @@
       "longitude": -38.57661974686584
     },
     "requestedBy": null,
+    "ocuppiedProperly": true,
     "isOcuppied": false,
     "luminosity": 0,
     "temperature": 0

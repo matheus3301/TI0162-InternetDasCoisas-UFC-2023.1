@@ -43,6 +43,11 @@ def on_new_presence(client, userdata, message):
 
     data.devices[device_id]["isOcuppied"] = isOcuppied
 
+    if isOcuppied:
+        commands.ask_occupation(client, device_id)
+    else:
+        data.devices[device_id]["ocupiedProperly"] = True
+
     print(
         f"[-] setting {device_id} as {'not ' if not isOcuppied else ''}occupied"
     )
@@ -57,9 +62,6 @@ def on_device_reserve(client, userdata, message):
 
 
     print(f"[-] user {raw_data} trying to reserve device {device_id}")
-    # response_topic = message.properties.ResponseTopic
-    # properties = Properties(PacketTypes.PUBLISH)
-    # properties.CorrelationData = message.properties.CorrelationData
 
     if data.devices[device_id]['requestedBy'] is None:
         data.devices[device_id]['requestedBy'] = raw_data
@@ -68,4 +70,12 @@ def on_device_reserve(client, userdata, message):
 
     commands.update_device_status(client, device_id)
 
-    # client.publish(response_topic, data.devices[device_id]['requestedBy'])
+
+def on_occupation_confirm(client, userdata, message):
+    device_id = util.get_device_id(message)
+    raw_data = message.payload.decode()
+
+    if raw_data != '1':
+        data.devices[device_id]['ocupiedProperly'] = False
+
+    commands.update_device_status(client, device_id)

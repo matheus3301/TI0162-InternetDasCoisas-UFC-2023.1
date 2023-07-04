@@ -3,6 +3,9 @@ import json
 
 NOTIFICATION_TOPIC = "notifications"
 
+def ask_occupation(client, device_id):
+    client.publish(f"device/{device_id}/ask", data.devices[device_id]['requestedBy'])
+
 
 def send_command(client, device_id, command):
     client.publish(f"commands/{device_id}", command)
@@ -27,7 +30,7 @@ def send_notifications(client):
 def update_device_status(client, device_id):
     if data.devices[device_id]['isOcuppied']:
 
-        if data.devices[device_id]['requestedBy'] is None:
+        if data.devices[device_id]['requestedBy'] is None or not data.devices[device_id]['ocupiedProperly']:
             print(f"[-] {device_id} ocuppied incorrectly")
 
             send_command(client, device_id, '2')
