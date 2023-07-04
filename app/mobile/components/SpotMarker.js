@@ -19,6 +19,9 @@ const SpotMarker = props => {
 
   function ReserveSpot(client, device, user, requested, status) {
     if ((requested===null &&  status===false) || (requested===useRef)) {
+      client.subscribe("devices/"+device+"/ask", ()=>{
+        console.log("ask received at: devices/"+device+"/ask")
+      })
       const message = new Paho.Message(user);
       message.destinationName = "devices/"+device+"/reserve";
       client.send(message);

@@ -1,10 +1,19 @@
 import { SafeAreaView, StyleSheet, ScrollView, Text, View} from 'react-native';
 import SpotCard from '../components/SpotCard';
 import useStore from '../dataStore';
+import * as Notifications from 'expo-notifications';
 
 function SpotsScreen() {
   const data = useStore((state) => state.data);
   const userSpots = data.filter((spot) => spot.requestedBy === "12345")
+
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
   
   const spotComponent = userSpots.map((spot) => 
     <SpotCard 

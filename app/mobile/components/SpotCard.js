@@ -12,6 +12,22 @@ const SpotCard = props => {
     client.send(message);
   }
 
+  function confirm(client, device) {
+    const message = new Paho.Message("1");
+    message.destinationName = "devices/"+device+"/confirm";
+    client.send(message);
+    client.unsubscribe("devices/"+device+"/ask")
+    console.log("confirm")
+  }
+
+  function deny(client, device) {
+    const message = new Paho.Message("0");
+    message.destinationName = "devices/"+device+"/confirm";
+    client.send(message);
+    client.unsubscribe("devices/"+device+"/ask")
+    console.log("deny")
+  }
+
   return (
     <View style={styles.spotCard}>
         <View style={styles.info}>
@@ -22,8 +38,14 @@ const SpotCard = props => {
             <Text style={styles.locationText}>{props.location}</Text>
           </View>
           <View style={{flex: 1}}>
-            <TouchableOpacity style={styles.cancelButton} onPress={() => CancelReserve(client, props.device, props.user)}>
+            {/* <TouchableOpacity style={styles.cancelButton} onPress={() => CancelReserve(client, props.device, props.user)}>
               <Text style={{color: "green"}}>Liberar Vaga</Text>
+            </TouchableOpacity> */}
+            <TouchableOpacity style={styles.cancelButton} onPress={() => confirm(client, props.device, props.user)}>
+              <Text style={{color: "green"}}>confirmar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cancelButton} onPress={() => deny(client, props.device, props.user)}>
+              <Text style={{color: "red"}}>negar</Text>
             </TouchableOpacity>
           </View>
         </View>

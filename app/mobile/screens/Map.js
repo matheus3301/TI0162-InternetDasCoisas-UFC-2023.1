@@ -7,7 +7,7 @@ import Paho from 'paho-mqtt';
 import useStore from '../dataStore';
 
 client = new Paho.Client(
-  "192.168.0.5",
+  "192.168.0.15",
   Number(9001),
   'mqtt-async-test'
 );
