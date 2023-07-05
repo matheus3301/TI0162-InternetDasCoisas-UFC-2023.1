@@ -69,7 +69,7 @@ function MapScreen() {
           requested={spot.requestedBy}
           situation={spot.ocuppiedProperly}
           temperature = {spot.temperature}
-          shade = {spot.onShadow}
+          luminosity = {spot.luminosity}
         />
       ));
     };

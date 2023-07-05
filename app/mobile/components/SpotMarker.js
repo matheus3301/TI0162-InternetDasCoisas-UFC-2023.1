@@ -7,7 +7,7 @@ const SpotMarker = props => {
   let iconName=""
   let iconColor=""
   
-  if (props.shade) {
+  if (props.luminosity<1000) {
     iconName="cloud"
     iconColor="gray"
   } else {
