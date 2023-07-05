@@ -20,6 +20,7 @@ function MapScreen() {
     const [spots, setSpots] = useState([])
     const setClient = useStore((state) => state.setClient);
     const setData = useStore((state) => state.setData);
+    const setAsk = useStore((state)=> state.setAsk)
 
     const geocode = async (address) => {
       if (address) {
@@ -47,7 +48,11 @@ function MapScreen() {
       if (message.destinationName === "notifications"){
         setSpots(JSON.parse(message.payloadString))
         setData(JSON.parse(message.payloadString))
-        console.log(message.payloadString)
+        // console.log(message.payloadString)
+      }
+      else {
+        setAsk([true, message.destinationName.split("/")[1]])
+        console.log(message.destinationName.split("/")[1])
       }
     }
 
@@ -62,7 +67,9 @@ function MapScreen() {
           client={client}
           user={"12345"}
           requested={spot.requestedBy}
-          //weather={spot.weather} 
+          situation={spot.ocuppiedProperly}
+          temperature = {spot.temperature}
+          shade = {spot.onShadow}
         />
       ));
     };

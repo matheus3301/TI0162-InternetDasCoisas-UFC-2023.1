@@ -19,7 +19,7 @@ function SpotsScreen() {
     <SpotCard 
     key={spot.name} 
     location={spot.name} 
-    status={spot.isOcuppied} 
+    status={spot.ocuppiedProperly} 
     device={spot.deviceName}
     user={"12345"}
     />
