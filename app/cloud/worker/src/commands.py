@@ -23,6 +23,7 @@ def send_notifications(client):
             'ocuppiedProperly': data.devices[device_id]['ocuppiedProperly'],
             'luminosity': data.devices[device_id]['luminosity'],
             'temperature': data.devices[device_id]['temperature'],
+            'onShadow': True if data.devices[device_id]['luminosity'] < 1000 else False
         })
 
     client.publish(NOTIFICATION_TOPIC, json.dumps(content))
