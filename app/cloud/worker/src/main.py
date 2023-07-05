@@ -41,6 +41,7 @@ client.loop_start()
 while True:
     try:
         commands.send_notifications(client)
+        # print("[ ] sending updates to client")
         time.sleep(NOTIFICATION_TIME)
     except Exception:
         pass
