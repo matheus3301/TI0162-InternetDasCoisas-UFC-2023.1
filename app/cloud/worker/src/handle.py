@@ -44,7 +44,7 @@ def on_new_presence(client, userdata, message):
     data.devices[device_id]["isOcuppied"] = isOcuppied
 
     if isOcuppied:
-        print('[ ] asking to user if its him')
+        print(f'[ ] asking to user if its him on device {device_id}')
         commands.ask_occupation(client, device_id)
     else:
         data.devices[device_id]["ocuppiedProperly"] = True

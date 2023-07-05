@@ -4,7 +4,7 @@ import json
 NOTIFICATION_TOPIC = "notifications"
 
 def ask_occupation(client, device_id):
-    client.publish(f"device/{device_id}/ask", data.devices[device_id]['requestedBy'])
+    client.publish(f"devices/{device_id}/ask", data.devices[device_id]['requestedBy'])
 
 
 def send_command(client, device_id, command):
